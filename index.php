@@ -315,6 +315,9 @@
 
 				border-radius: 20px!important;
 			}
+			textarea {
+				resize: none!important;
+			}
 		</style>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
@@ -322,7 +325,7 @@
 	<body>
 		<div class="page-header">
 			<div class="container">
-				<h1>TTS ATIS GENERATOR</h1>
+				<h1>Redbeard's TTS ATIS Generator</h1>
 			</div>
 		</div>
 		<div class="jumbotron">
@@ -438,7 +441,7 @@
   </div> 
   
   <div class="form-group row">
-    <label for="" class="col-4 col-form-label">Human Readable ATIS</label> 
+    <label for="" class="col-4 col-form-label">ATIS Output for TTS</label> 
     <div class="col-8">
       <textarea id="" name="" cols="40" rows="5" class="form-control" readonly>
 <?
