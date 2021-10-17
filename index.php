@@ -307,9 +307,11 @@
 		
 		<!-- Font Awesome -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 		<style>
 			input, textarea,button,select {
 
@@ -319,8 +321,6 @@
 				resize: none!important;
 			}
 		</style>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<div class="page-header">
@@ -424,7 +424,7 @@
 </div>
 <div class="col-md-2"></div>
 <div class="col-md-5">
-<form>
+<form method="get" action="./download.php">
   <div class="form-group row">
     <label for="" class="col-4 col-form-label">Human Readable ATIS</label> 
     <div class="col-8">
@@ -452,10 +452,24 @@
 	endif;
 ?>
 	  </textarea>
+
     </div>
   </div> 
+ <?
+	if(!isset($spokenATIS)) :
+		return false;
+	else :
+		echo "<input type=\"hidden\" name=\"output\" value=\"" . $spokenATIS . "\">\n";
+?>
+			<div class="form-group row">
+				<div class="col-xs-4 col-xs-8">
+					<button name="submit" type="submit" class="btn btn-primary">Click to Download ATIS Audio</button>
+				</div>
+			</div>
+<?
+	endif;
+?>
 </form>
-<a href="http://api.voicerss.org/?key=92a278f391ff4c4fb65e6fbc69c10e5f&hl=en-us&c=MP3&v=John&f=16khz_16bit_stereo&src=<?=$spokenATIS;?>">Right Click To Download</a> 
 </div>
 			</div>
 		</div>
