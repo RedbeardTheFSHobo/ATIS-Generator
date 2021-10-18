@@ -169,12 +169,18 @@
 		endif;
 		$distanceUnit = $in->units->visibility;
 		$visibilityDistance = $in->visibility->repr;
-		
+		$out = null;
 		if($distanceUnit == "m") :
-			return "visibility " . phonetize(round($visibilityDistance/1000),$phonetize) . " kilometers";
+			$out .= "visibility " . phonetize(round($visibilityDistance/1000),$phonetize) . " kilometers";
 		else :
-			return "visibility " . phonetize($visibilityDistance,$phonetize) . " miles";
+			$out .=  "visibility " . phonetize($visibilityDistance,$phonetize) . " miles";
 		endif;
+		if(!isset($phonetize)) :
+			$out .= ". ";
+		else :
+			$out .= "... ";
+		endif;
+		return $out;
 	}
 		
 	
@@ -335,7 +341,6 @@
 		</style>
 	</head>
 	<body>
-<
 		<div class="page-header">
 			<div class="container">
 				<h1>Redbeard's TTS ATIS Generator</h1>
@@ -397,7 +402,7 @@
 			"winnds " . wind_full($wxData) . "... " .
 			visibility($wxData) . 
 			weather($wxData) .
-			clouds($wxData) . "... " .
+			clouds($wxData) .
 			"temperature " . temperature($wxData) . "... " .
 			"dewpoint " . dewpoint($wxData) . "... " .
 			altimeter($wxData) . "... " .
@@ -410,7 +415,7 @@
 			station_name($stationData) . " information " . phonetize($ident,true) . ". " .
 			metar_time($wxData,true) . ". " .
 			"winds " . wind_full($wxData,true) . ". " .
-			visibility($wxData,true) . ". " .
+			visibility($wxData,true) .
 			weather($wxData) .
 			clouds($wxData) .
 			"temperature " . temperature($wxData,true) . ". " .
