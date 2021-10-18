@@ -411,7 +411,7 @@
 <div class="col-md-2"></div>
 <div class="col-md-5">
 <?
-	if(isset($_POST['station_id'])) :
+	if(!empty($_POST)) :
 		$wxSource = "https://avwx.rest/api/metar/" . $_POST['station_id'] ."?options=speech&airport=true&reporting=true&format=json&onfail=cache&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k";
 		if(!@file_get_contents($wxSource)) :
 			echo "<div class='alert alert-danger'><strong>ERROR:</strong> Airport not found.</div>\n";
