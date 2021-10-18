@@ -1,8 +1,4 @@
 <?
-	if(isset($_POST['station_id'])) :
-		$wxData = json_decode(file_get_contents("https://avwx.rest/api/metar/" . $_POST['station_id'] ."?options=speech&airport=true&reporting=true&format=json&onfail=cache&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k"));
-		$stationData = json_decode(file_get_contents("https://avwx.rest/api/station/" . $_POST['station_id'] ."?format=json&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k"));
-	endif;
 	function phonetize($in,$phonetize=null,$runway=null) {
 		if(!isset($in)) :
 			return false;
@@ -164,21 +160,23 @@
 		if(!isset($in)) :
 			return false;
 		endif;
-		if($in->visibility->repr == "CAVOK") :
-			return "CAVOK";
-		endif;
-		$distanceUnit = $in->units->visibility;
-		$visibilityDistance = $in->visibility->repr;
 		$out = null;
-		if($distanceUnit == "m") :
-			$out .= "visibility " . phonetize(round($visibilityDistance/1000),$phonetize) . " kilometers";
+		if($in->visibility->repr == "CAVOK") :
+			$out .= "CAVOK";
 		else :
-			$out .=  "visibility " . phonetize($visibilityDistance,$phonetize) . " miles";
+			$distanceUnit = $in->units->visibility;
+			$visibilityDistance = $in->visibility->repr;
+			if($distanceUnit == "m") :
+				$out .= "visibility " . phonetize(round($visibilityDistance/1000),$phonetize) . " kilometers";
+			else :
+				$out .=  "visibility " . phonetize($visibilityDistance,$phonetize) . " miles";
+			endif;
+
 		endif;
 		if(!isset($phonetize)) :
-			$out .= ". ";
-		else :
 			$out .= "... ";
+		else :
+			$out .= ". ";
 		endif;
 		return $out;
 	}
@@ -200,9 +198,9 @@
 					$out .= ", ";
 				else : 
 					if(!isset($phonetize)) :
-						$out .= ". ";
-					else :
 						$out .= "... ";
+					else :
+						$out .= ". ";
 					endif;
 				endif;
 				$i++;
@@ -262,9 +260,9 @@
 					$out .= ", ";
 				else :
 					if(!isset($phonetize)) :
-						$out .= ". ";
-					else :
 						$out .= "... ";
+					else :
+						$out .= ". ";
 					endif;
 				endif;
 				$i++;
@@ -395,40 +393,10 @@
 				</div>
 			</div>
 			<?
-	if(isset($_POST['station_id'])) :
-		$readableATIS = strtoupper(
-			station_name($stationData,true) . " information {$ident}... " .
-			metar_time($wxData) . "... " .
-			"winnds " . wind_full($wxData) . "... " .
-			visibility($wxData) . 
-			weather($wxData) .
-			clouds($wxData) .
-			"temperature " . temperature($wxData) . "... " .
-			"dewpoint " . dewpoint($wxData) . "... " .
-			altimeter($wxData) . "... " .
-			"arrival " . runways($arr_rwy) . "... " .
-			"departure " . runways($dep_rwy) ."... " .
-			remarks($rmk) .
-			"advise controller on intial contact that you have information {$ident}."
-		);
-		$spokenATIS = strtoupper(
-			station_name($stationData) . " information " . phonetize($ident,true) . ". " .
-			metar_time($wxData,true) . ". " .
-			"winds " . wind_full($wxData,true) . ". " .
-			visibility($wxData,true) .
-			weather($wxData) .
-			clouds($wxData) .
-			"temperature " . temperature($wxData,true) . ". " .
-			"dewpoint " . dewpoint($wxData,true) . ". " .
-			altimeter($wxData,true) . ". " .
-			"arrival " . runways($arr_rwy,true) . ". " .
-			"departure " . runways($dep_rwy,true) .". " .
-			remarks($rmk) .
-			"advise controller on intial contact that you have information " . phonetize($ident,true)
-		);
+
 ?>
 
- <?	endif; ?>
+
 	
 		
 			<div class="form-group row">
@@ -442,18 +410,56 @@
 </div>
 <div class="col-md-2"></div>
 <div class="col-md-5">
+<?
+	if(isset($_POST['station_id'])) :
+		$wxSource = "https://avwx.rest/api/metar/" . $_POST['station_id'] ."?options=speech&airport=true&reporting=true&format=json&onfail=cache&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k";
+		if(!@file_get_contents($wxSource)) :
+			echo "<div class='alert alert-danger'><strong>ERROR:</strong> Airport not found.</div>\n";
+		else :
+			$wxData = json_decode(file_get_contents("https://avwx.rest/api/metar/" . $_POST['station_id'] ."?options=speech&airport=true&reporting=true&format=json&onfail=cache&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k"));
+			$stationData = json_decode(file_get_contents("https://avwx.rest/api/station/" . $_POST['station_id'] ."?format=json&token=LwHCwFyqq279ncN3qnK_IMlWLmmXltXzbljN6uIKg-k"));
+			$readableATIS = strtoupper(
+				station_name($stationData,true) . " information {$ident}... " .
+				metar_time($wxData) . "... " .
+				"winds " . wind_full($wxData) . "... " .
+				visibility($wxData) . 
+				weather($wxData) .
+				clouds($wxData) .
+				"temperature " . temperature($wxData) . "... " .
+				"dewpoint " . dewpoint($wxData) . "... " .
+				altimeter($wxData) . "... " .
+				"arrival " . runways($arr_rwy) . "... " .
+				"departure " . runways($dep_rwy) ."... " .
+				remarks($rmk) .
+				"advise controller on intial contact that you have information {$ident}."
+			);
+			$spokenATIS = strtoupper(
+				station_name($stationData) . " information " . phonetize($ident,true) . ". " .
+				metar_time($wxData,true) . ". " .
+				"winnds " . wind_full($wxData,true) . ". " .
+				visibility($wxData,true) .
+				weather($wxData) .
+				clouds($wxData) .
+				"temperature " . temperature($wxData,true) . ". " .
+				"dewpoint " . dewpoint($wxData,true) . ". " .
+				altimeter($wxData,true) . ". " .
+				"arrival " . runways($arr_rwy,true) . ". " .
+				"departure " . runways($dep_rwy,true) .". " .
+				remarks($rmk) .
+				"advise controller on intial contact that you have information " . phonetize($ident,true)
+			);
+		endif;
+	endif;
+	$readableATIS = (isset($readableATIS)) ? $readableATIS : "ATIS Not Generated";
+	$spokenATIS = (isset($spokenATIS)) ? $spokenATIS : "ATIS Not Generated";
+
+?>
 <form method="get" action="./download.php">
   <div class="form-group row">
     <label for="" class="col-4 col-form-label">Human Readable ATIS</label> 
     <div class="col-8">
       <textarea id="" name="" cols="40" rows="5" class="form-control" readonly>
-<?
-	if(!isset($readableATIS)) :
-		echo "ATIS Not Generated";
-	else:
-		echo $readableATIS;
-	endif;
-?>
+<?=$readableATIS;?>
 	  </textarea>
     </div>
   </div> 
@@ -462,31 +468,18 @@
     <label for="" class="col-4 col-form-label">ATIS Output for TTS</label> 
     <div class="col-8">
       <textarea id="" name="" cols="40" rows="5" class="form-control" readonly>
-<?
-	if(!isset($spokenATIS)) :
-		echo "ATIS Not Generated";
-	else:
-		echo $spokenATIS;
-	endif;
-?>
+<?=$spokenATIS;?>
 	  </textarea>
 
     </div>
   </div> 
- <?
-	if(!isset($spokenATIS)) :
-		return false;
-	else :
-		echo "<input type=\"hidden\" name=\"output\" value=\"" . $spokenATIS . "\">\n";
-?>
+			<?="<input type=\"hidden\" name=\"output\" value=\"" . $spokenATIS . "\">\n";?>
 			<div class="form-group row">
 				<div class="col-xs-4 col-xs-8">
 					<button name="submit" type="submit" class="btn btn-primary">Download ATIS Audio</button>
 				</div>
 			</div>
-<?
-	endif;
-?>
+
 </form>
 </div>
 			</div>
