@@ -454,26 +454,25 @@
 	$spokenATIS = (isset($spokenATIS)) ? $spokenATIS : "ATIS Not Generated";
 
 ?>
-<form method="get" action="./download.php">
+<form method="post" action="./download.php">
   <div class="form-group row">
-    <label for="" class="col-4 col-form-label">Human Readable ATIS</label> 
+    <label for="readableATIS" class="col-4 col-form-label">Human Readable ATIS</label> 
     <div class="col-8">
-      <textarea id="" name="" cols="40" rows="5" class="form-control" readonly>
+      <textarea id="readableATIS" name="readableATIS" cols="40" rows="5" class="form-control" readonly>
 <?=$readableATIS;?>
 	  </textarea>
     </div>
   </div> 
   
   <div class="form-group row">
-    <label for="" class="col-4 col-form-label">ATIS Output for TTS</label> 
+    <label for="spokenATIS" class="col-4 col-form-label">ATIS Output for TTS</label> 
     <div class="col-8">
-      <textarea id="" name="" cols="40" rows="5" class="form-control" readonly>
+      <textarea id="spokenATIS" name="spokenATIS" cols="40" rows="5" class="form-control" readonly>
 <?=$spokenATIS;?>
 	  </textarea>
 
     </div>
   </div> 
-			<?="<input type=\"hidden\" name=\"output\" value=\"" . $spokenATIS . "\">\n";?>
 			<div class="form-group row">
 				<div class="col-xs-4 col-xs-8">
 					<button name="submit" type="submit" class="btn btn-primary">Download ATIS Audio</button>
