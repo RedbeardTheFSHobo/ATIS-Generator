@@ -335,9 +335,7 @@
 		</style>
 	</head>
 	<body>
-<pre>
-<?=var_dump($wxData);?>
-</pre>
+<
 		<div class="page-header">
 			<div class="container">
 				<h1>Redbeard's TTS ATIS Generator</h1>
