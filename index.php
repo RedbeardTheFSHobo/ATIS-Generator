@@ -184,7 +184,7 @@
 		endif;
 		$wxCodes = $in->wx_codes;
 		if(empty($wxCodes)) :
-			return "No significant weather";
+			return false;
 		else :
 			$out = null;
 			$i=1;
@@ -192,6 +192,12 @@
 				$out .= $wxType->value;
 				if($i < count($wxCodes)) :
 					$out .= ", ";
+				else : 
+					if(!isset($phonetize)) :
+						$out .= ". ";
+					else :
+						$out .= "... ";
+					endif;
 				endif;
 				$i++;
 			endforeach;
@@ -231,10 +237,10 @@
 		if(!isset($in->clouds)) :
 			return false;
 		endif;
-		$library = array("BKN" => "broken clouds", "CB" => "cumulonimbus", "CLR" => "sky clear", "FEW" => "few clouds", "OVC" => "overcast", "SCT" => "scattered clouds", "TCU" => "towering cumulus");
+		$library = array("BKN" => "broken clouds", "CB" => "cumulonimbus", "CLR" => "sky clear", "FEW" => "few clouds", "OVC" => "overcast", "SCT" => "scattered clouds", "SKC" => "Sky Clear", "NSC" => "No Significant Clouds below 12000 feet", "NSC" => "No Significant Cloud", "TCU" => "towering cumulus");
 		$clouds = $in->clouds;
 		if(empty($clouds)) :
-			return "Sky Clear";
+			return false;
 		else :
 			$out = null;
 			$i = 1;
@@ -248,6 +254,12 @@
 				endif;
 				if($i < count($clouds)) :
 					$out .= ", ";
+				else :
+					if(!isset($phonetize)) :
+						$out .= ". ";
+					else :
+						$out .= "... ";
+					endif;
 				endif;
 				$i++;
 			endforeach;
@@ -323,6 +335,9 @@
 		</style>
 	</head>
 	<body>
+<pre>
+<?=var_dump($wxData);?>
+</pre>
 		<div class="page-header">
 			<div class="container">
 				<h1>Redbeard's TTS ATIS Generator</h1>
@@ -382,8 +397,8 @@
 			station_name($stationData,true) . " information {$ident}... " .
 			metar_time($wxData) . "... " .
 			"winnds " . wind_full($wxData) . "... " .
-			visibility($wxData) . "... " .
-			weather($wxData) . "... " .
+			visibility($wxData) . 
+			weather($wxData) .
 			clouds($wxData) . "... " .
 			"temperature " . temperature($wxData) . "... " .
 			"dewpoint " . dewpoint($wxData) . "... " .
@@ -398,8 +413,8 @@
 			metar_time($wxData,true) . ". " .
 			"winds " . wind_full($wxData,true) . ". " .
 			visibility($wxData,true) . ". " .
-			weather($wxData) . ". " .
-			clouds($wxData) . ". " .
+			weather($wxData) .
+			clouds($wxData) .
 			"temperature " . temperature($wxData,true) . ". " .
 			"dewpoint " . dewpoint($wxData,true) . ". " .
 			altimeter($wxData,true) . ". " .
@@ -463,7 +478,7 @@
 ?>
 			<div class="form-group row">
 				<div class="col-xs-4 col-xs-8">
-					<button name="submit" type="submit" class="btn btn-primary">Click to Download ATIS Audio</button>
+					<button name="submit" type="submit" class="btn btn-primary">Download ATIS Audio</button>
 				</div>
 			</div>
 <?
