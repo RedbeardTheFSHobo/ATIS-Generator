@@ -126,11 +126,11 @@
 	}
 	
 	function wind_gust($in,$phonetize=null) {
-		if(!isset($in->wind_gust)) :
+		if(!isset($in)) :
 			return false;
 		endif;
 		$windGustSpd = $in->wind_gust;
-		if(!isset($windGustSpd->value)) :
+		if(empty($windGustSpd)) :
 			return false;
 		else :
 			return phonetize($windGustSpd->repr,$phonetize);
@@ -143,17 +143,17 @@
 		endif;
 		$windSpd = wind_spd($in,$phonetize);
 		$windDir = wind_dir($in,$phonetize);
-		$wingGustSpd = wind_gust($in,$phonetize);
+		$windGustSpd = wind_gust($in,$phonetize);
+		$out = null;
 		if(isset($windDir) and isset($windSpd)) :
-			return $windDir . " at " . $windSpd;
-			if(!isset($windGustSpd)) :
-				return false;
-			else :
-				return " gusting " . phonetize($windGustSpd,$phonetize);
+			$out .= $windDir . " at " . $windSpd;
+			if(isset($windGustSpd)) :
+				$out .= " gusting " . $windGustSpd;
 			endif;
 		else :
-			return "calm";
+			$out = "calm";
 		endif;
+		return $out;
 	}
 	
 	function visibility($in,$phonetize=null) {
@@ -182,7 +182,7 @@
 	}
 		
 	
-	function weather($in) {
+	function weather($in,$phonetize=null) {
 		if(!isset($in->wx_codes)) :
 			return false;
 		endif;
@@ -237,7 +237,7 @@
 		return phonetize($in->dewpoint->value,$phonetize);
 	}
 	
-	function clouds($in) {
+	function clouds($in,$phonetize=null) {
 		if(!isset($in->clouds)) :
 			return false;
 		endif;
@@ -251,11 +251,7 @@
 			foreach($clouds as $cloud) :
 				$out .= $library[$cloud->type];
 				$out .= " at ";
-				if(strlen($cloud->altitude) < 3) :
-					$out .= $cloud->altitude*100;
-				else :
-					$out .= $cloud->altitude;
-				endif;
+				$out .= $cloud->altitude*100;
 				if($i < count($clouds)) :
 					$out .= ", ";
 				else :
@@ -339,6 +335,7 @@
 		</style>
 	</head>
 	<body>
+
 		<div class="page-header">
 			<div class="container">
 				<h1>Redbeard's TTS ATIS Generator</h1>
@@ -438,8 +435,8 @@
 				metar_time($wxData,true) . ". " .
 				"winnds " . wind_full($wxData,true) . ". " .
 				visibility($wxData,true) .
-				weather($wxData) .
-				clouds($wxData) .
+				weather($wxData,true) .
+				clouds($wxData,true) .
 				"temperature " . temperature($wxData,true) . ". " .
 				"dewpoint " . dewpoint($wxData,true) . ". " .
 				altimeter($wxData,true) . ". " .
@@ -483,6 +480,5 @@
 </div>
 			</div>
 		</div>
-
 	</body>
 </html>
