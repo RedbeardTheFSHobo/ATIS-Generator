@@ -130,7 +130,7 @@
 			return false;
 		endif;
 		$windGustSpd = $in->wind_gust;
-		if(empty($windGustSpd)) :
+		if(!isset($windGustSpd)) :
 			return false;
 		else :
 			return phonetize($windGustSpd->repr,$phonetize);
@@ -147,8 +147,10 @@
 		$out = null;
 		if(isset($windDir) and isset($windSpd)) :
 			$out .= $windDir . " at " . $windSpd;
-			if(isset($windGustSpd)) :
+			if(!empty($windGustSpd)) :
 				$out .= " gusting " . $windGustSpd;
+			else :
+				$out .= "";
 			endif;
 		else :
 			$out = "calm";
@@ -241,7 +243,7 @@
 		if(!isset($in->clouds)) :
 			return false;
 		endif;
-		$library = array("BKN" => "broken clouds", "CB" => "cumulonimbus", "CLR" => "sky clear", "FEW" => "few clouds", "OVC" => "overcast", "SCT" => "scattered clouds", "SKC" => "Sky Clear", "NSC" => "No Significant Clouds below 12000 feet", "NSC" => "No Significant Cloud", "TCU" => "towering cumulus");
+		$library = array("VV" => "Vertical Visibility", "BKN" => "broken clouds", "CB" => "cumulonimbus", "CLR" => "sky clear", "FEW" => "few clouds", "OVC" => "overcast", "SCT" => "scattered clouds", "SKC" => "Sky Clear", "NSC" => "No Significant Clouds below 12000 feet", "NSC" => "No Significant Cloud", "TCU" => "towering cumulus");
 		$clouds = $in->clouds;
 		if(empty($clouds)) :
 			return false;
@@ -250,7 +252,11 @@
 			$i = 1;
 			foreach($clouds as $cloud) :
 				$out .= $library[$cloud->type];
-				$out .= " at ";
+				if($cloud->type == "VV") :
+					$out .= " up to ";
+				else :
+					$out .= " at ";
+				endif;
 				$out .= $cloud->altitude*100;
 				if($i < count($clouds)) :
 					$out .= ", ";
@@ -323,15 +329,33 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> 
 		<style>
-			input, textarea,button,select {
-
-				border-radius: 20px!important;
+		
+			* {
+					font-family: 'Share Tech Mono', monospace!important;
+					color:#8a9c9b!important;
+			}
+			body, html,div {
+					background-color:#196787!important;
+			}
+			input, textarea,button,select, option {
+				background:#414b4c!important;
 			}
 			textarea {
 				resize: none!important;
 			}
+			.page-header{
+				border-bottom:0px!important;
+			}
+			button{
+				background:#2c3034!important;
+				border:1px solid #2c3034!important;
+			}
+			.help-block { color:#707d1c!important;}
+			
 		</style>
 	</head>
 	<body>
