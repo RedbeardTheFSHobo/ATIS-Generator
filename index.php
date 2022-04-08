@@ -118,7 +118,7 @@ function phonetize($input,$phonetize,$runway=false){
 //echo metar_global()."\n\n";
 
 function get_airport_name($input,$phonetize){
-	$mysqli=new mysqli('localhost','redbbqhz_Vbyn','WentNeed$l5FQ','redbbqhz_atis_generator');
+	$mysqli=new mysqli('localhost','username','password','database');
 	$query="SELECT name FROM airports WHERE icao='".strtoupper($input)."' limit 1";
 	$result=$mysqli->query($query);
 	$row=$result->fetch_row();
